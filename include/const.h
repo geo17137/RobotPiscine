@@ -30,6 +30,7 @@ const String version = "2025.02.27 [D.T]";
 // FORCE permet de forcer la mise à jour des paramètres
 // à partir de la chaine PARAM
 #define FORCE  false 
+#define WeMos_D1_Mini
 // Pour la mise au point
 // Définir DEBUG permet de diviser les données du cycle par 10
 //#define DEBUG
@@ -43,8 +44,13 @@ const String version = "2025.02.27 [D.T]";
 #define TIMER_TIC 1000
 
 // Port des relais utilisé par les moteurs du robot
+#ifdef WeMos_D1_Mini
+#define GPIO2_FORWARD 5
+#define GPIO0_RETURN  4   
+#else
 #define GPIO2_FORWARD 2
 #define GPIO0_RETURN  0
+#endif
 
 // Messages MQTT
 //-----------------Abonnements---------------------
