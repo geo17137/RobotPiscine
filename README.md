@@ -6,11 +6,11 @@ Il est implémenté sur une carte esp01s pilotant une carte à deux relais plac�
 la partie non immergée du robot.<br>
 Cet ensemble remplace l'électronique d'origine des robots (hors alimentation de puissance).
 L'électronique de la partie immergée du robot est supprimée et est remplacée par
-un part un pont de diodes. La partie immergée est alimentée uniquement à l'aide de deux fils
+un pont de diodes. La partie immergée est alimentée uniquement à l'aide de deux fils
 véhiculant un courant dont la polarité s'inverse pour changer le sens de déplacement du 
 robot.<br>
 Le pont de diode assure la rotation unidirectionnelle de la turbine.<br>
-Dans la partie non immergée du robot seule l'alimention bt est conservée.<br>
+Dans la partie non immergée du robot, seule l'alimention BT est conservée.<br>
 La carte de commande communique via des messages MQTT avec un courtier MQTT public ou privé.<br>
 Une application Android permet de paramétrer le cycle de nettoyage ou de commander manuellement
 le robot.<br>
