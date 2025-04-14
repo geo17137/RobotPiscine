@@ -264,24 +264,19 @@ void endCycle() {
   activeScheduledTask = false;
 }
 
-// Monostables
-// Appelé par le scheduler toute les s
+// Timer
+// Appelé par le scheduler toute les currentRandomValue secondes
 // Avance-recule
 void robotTask() {
-  static boolean direction;
-  unsigned currentRandomValue;
   powerOff();
   delay(750);
   // Nouveau temps d'avance ou de recul
   currentRandomValue = random(minRandom, maxRandom);
   timerTask.setInterval(idRobotTask, currentRandomValue);
-  // timerTask.printStatus(idRobotTask);
   if (!direction) {
-    sprintf(randomBuffer, "av %3d", currentRandomValue);
     robotForward();
   }
   else {
-    sprintf(randomBuffer, "ar %3d", currentRandomValue);
     robotReturn();
   }
   mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
@@ -367,13 +362,21 @@ void deleteLogs() {
 */
 void publishState() {
   static char buffer[60];
-  sprintf(buffer, "Cycle %d/%d, durée %d/%d mn#%d",
+  char randomBuffer[60];
+  sprintf(buffer, "Cycle %d/%d, t=%d/%d mn#%d",
     currentCycle,
     nbCycles,
     timerTask.getCurrentTime(idEndRobotTask) / 60,
     timerTask.getStopTime(idEndRobotTask) / 60,
     timerTask.getStatus(idRobotTask) != CREE);
-  mqttClient.publish(TOPIC_STATUS, buffer);
+  mqttClient.publish(TOPIC_STATUS, buffer);  
+  if (!direction) {
+    sprintf(randomBuffer, "AV %d/%d", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
+  }
+  else {
+    sprintf(randomBuffer, "AR %d/%d", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
+  }  
+  mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
   if (activeScheduledTask)
     mqttClient.publish(TOPIC_SCHEDULED, bufferTime);
 }
