@@ -31,10 +31,11 @@ int maxRandom;
 int nbCycles;
 int activeTime;
 int logStatus;
+unsigned currentRandomValue;
 
 int currentCycle;
 boolean activeScheduledTask;
-
+boolean direction;
 
 // Id des tâches
 task_id idRobotTask;
