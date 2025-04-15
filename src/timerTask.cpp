@@ -9,6 +9,8 @@
 #include "timerTask.h"
 
 Task tabTask[MAX_TASK];
+Task tabLastStatusTask[MAX_TASK];
+const char* textStatus[4] = {"N_CREE", "CREE", "PRET", "SUSP"};
 
 /**
  * @brief Default constructor.
@@ -19,7 +21,7 @@ Task::Task() {
   // fonc = 0;
   status = N_CREE;
   currentTime = 0;
-  stopTime = 0;
+  startTime = 0;
 }
 
 /**
@@ -57,21 +59,19 @@ int Task::t_creer(void (*fonc)(void),unsigned stopTime, boolean isTimer) {
  */
 void Task::schedule() {
   for (int taskId = 0; taskId < MAX_TASK; taskId++) {
+      // printStatus(taskId);
     if (tabTask[taskId].status == PRET) {
       tabTask[taskId].currentTime++;
-      // printStatus(taskId);
-      if (tabTask[taskId].currentTime == tabTask[taskId].stopTime) {
+      if (tabTask[taskId].currentTime == tabTask[taskId].startTime) {
         tabTask[taskId].status = EXEC;
         tabTask[taskId].fonc();
-        // Si la tache ne modifie pas son status
-        if (tabTask[taskId].status == EXEC) {
-          // Si on a affaire à un monostable
-          if (!tabTask[taskId].timerTask)
-            tabTask[taskId].status = CREE;
-          else {
-            tabTask[taskId].status = PRET;
-            tabTask[taskId].currentTime = 0;
-          }
+      }
+      if (tabTask[taskId].status == EXEC) {
+        if (!tabTask[taskId].timerTask)
+          tabTask[taskId].status = CREE;
+        else {
+          tabTask[taskId].status = PRET;
+          tabTask[taskId].currentTime = 0;
         }
       }
     }
@@ -94,8 +94,8 @@ void  Task::printStatusAll() {
  * @param taskId The index of the task in the task table.
  */
 void  Task::printStatus(int taskId) {
-  Serial.printf("task=%d, status=%d, currentTime=%2d, stopTime=%2d\n",
-    taskId, tabTask[taskId].status, tabTask[taskId].currentTime, tabTask[taskId].stopTime);
+  Serial.printf("task=%d, status=%s, currentTime=%2d, stopTime=%2d\n",
+    taskId, textStatus[tabTask[taskId].status], tabTask[taskId].currentTime, tabTask[taskId].startTime);
 }
 /**
  * @brief Retrieves the current status of a task.
@@ -147,7 +147,7 @@ void Task::t_stop(int taskId) {
  * @param interval The time interval after which the task should execute.
  */
 void Task::setInterval(int taskId, unsigned interval) {
-  tabTask[taskId].stopTime = interval;
+  tabTask[taskId].startTime = interval;
 }
 /**
  * @brief Deletes a task.
@@ -188,8 +188,8 @@ void Task::setCurrentTime(int taskId , unsigned time) {
  * @param taskId The index of the task in the task table.
  * @return The stopTime value of the task.
  */
-unsigned Task::getStopTime(int taskId) {
-  return tabTask[taskId].stopTime;
+unsigned Task::getStartTime(int taskId) {
+  return tabTask[taskId].startTime;
 }
 
 /**
@@ -200,7 +200,31 @@ unsigned Task::getStopTime(int taskId) {
  * @param taskId The index of the task in the task table.
  * @param time The new stopTime value to set.
  */
-void Task::setStopTime(int taskId, unsigned time) {
-  tabTask[taskId].stopTime = time;
+void Task::setStartTime(int taskId, unsigned time) {
+  tabTask[taskId].startTime = time;
 }
 
+/**
+ * @brief Supspend a task.
+ *
+ * @param taskId The index of the task in the task table.
+ */
+void Task::t_suspend(int taskId) {
+  // Serial.println(itask);
+  if (taskId == -1)
+    return;
+  // if (tabTask[taskId].status == EXEC)
+  tabLastStatusTask[taskId].status = tabTask[taskId].status;  
+  tabTask[taskId].status = SUSP;
+}
+/**
+ * @brief Resume a task.
+ *
+ * @param taskId The index of the task in the task table.
+ */
+void Task::t_resume(int taskId) {
+  // Serial.println(itask);
+  if (taskId == -1)
+    return;
+  tabTask[taskId].status = tabLastStatusTask[taskId].status;  
+}

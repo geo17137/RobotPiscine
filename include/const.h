@@ -25,10 +25,12 @@
 #endif
 */
 
-const String version = "2025.04.14 [D.T]";
+const String version = "2025.04.15 [D.T]";
 #define HOSTNAME "ROBOT_ESP"
 // FORCE permet de forcer la mise à jour des paramètres
 // à partir de la chaine PARAM
+#define POWER_DEBUG
+
 #define FORCE  false 
 #define WeMos_D1_Mini
 // Pour la mise au point
@@ -65,7 +67,7 @@ const String version = "2025.04.14 [D.T]";
 #define TOPIC_RESET        PREFIX "robot/reset"
 
 // -------------Publications--------------------
-#define TOPIC_PARAM        PREFIX "robot/param"
+#define TOPIC_PARAM        PREFIX "robot/param"   
 #define TOPIC_READ_VERSION PREFIX "robot/readVersion"
 #define TOPIC_READ_LOGS    PREFIX "robot/readLogs"
 #define TOPIC_LOG_STATUS   PREFIX "robot/log_status"
