@@ -22,9 +22,10 @@
 #define CREE      1
 #define PRET      2
 #define EXEC      4
-#define SUSPENDU  3
+#define SUSP      3
 
 typedef int task_id;
+
 /**
  * @class Task
  * @brief Represents a scheduled task.
@@ -38,19 +39,21 @@ private:
   void (*fonc)(void);
   unsigned status;
   unsigned currentTime;
-  unsigned stopTime;
+  unsigned startTime;
   boolean timerTask;
 public:
   Task();
-  Task(void (*fonc)(void), unsigned stopTime) {
+  Task(void (*fonc)(void), unsigned startTime) {
     this->fonc = fonc;
-    this->stopTime = stopTime;
+    this->startTime = startTime;
     this->currentTime = 0;
     this->status = CREE;
   }
   task_id t_creer(void (*fonc)(void), unsigned stopTime, boolean isTimer);
   void t_start(int taskId);
   void t_stop(int taskId);
+  void t_suspend(int taskId);
+  void t_resume(int taskid);
   void t_delete(int taskId);
   void setInterval(int taskId, unsigned interval);
   void schedule();
@@ -58,8 +61,8 @@ public:
   void printStatusAll();
   int  getStatus(int taskId);
   unsigned getCurrentTime(int taskId);
-  unsigned getStopTime(int taskId);
+  unsigned getStartTime(int taskId);
   void setCurrentTime(int taskId, unsigned time);
-  void setStopTime(int taskId, unsigned time);
+  void setStartTime(int taskId, unsigned time);
 };
 #endif

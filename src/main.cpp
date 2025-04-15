@@ -367,7 +367,7 @@ void publishState() {
     currentCycle,
     nbCycles,
     timerTask.getCurrentTime(idEndRobotTask) / 60,
-    timerTask.getStopTime(idEndRobotTask) / 60,
+    timerTask.getStartTime(idEndRobotTask) / 60,
     timerTask.getStatus(idRobotTask) != CREE);
   mqttClient.publish(TOPIC_STATUS, buffer);  
   if (!direction) {
@@ -416,6 +416,7 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
   String strPayload = "";
   static String strON = "ON";
   static String strOFF = "OFF";
+  static String strSTOP = "STOP";
 
   for (unsigned int i = 0; i < length; i++) {
     strPayload += (char)payload[i];
@@ -433,7 +434,7 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
     // Serial.println(tabParam);
     // setParam met à jour activeTime
     // Réactualiser le temps de fonctionnement du robot si modifié
-    timerTask.setStopTime(idEndRobotTask, activeTime * 60);
+    timerTask.setStartTime(idEndRobotTask, activeTime * 60);
     return;
   }
   //------------------- TOPIC_GET_PARAM ----------------
@@ -480,6 +481,7 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
       timerTask.t_start(idRobotTask);
       timerTask.t_start(idEndRobotTask);
       writeLogs("Start manual cycle");
+
     }
     else {
       robotEndTask();
@@ -489,18 +491,41 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
   }
   //------------------ TOPIC_MANUAL ----------------
   else if (strcmp(topic, TOPIC_MANUAL) == 0) {
-    timerTask.t_stop(idRobotTask);
-    timerTask.t_stop(idEndRobotTask);
-    if (strPayload == strON) {
-      robotForward();
-      delay(2000);
+    static boolean b;
+    // timerTask.printStatus(idRobotTask);
+    if (currentCycle==0) {
+      timerTask.t_stop(idRobotTask);
+      timerTask.t_stop(idEndRobotTask);
+      if (strPayload == strON) {
+        robotForward();
+        delay(2000);
+        }
+      else if (strPayload == strOFF) {
+        robotReturn();
+        delay(2000);
       }
-    else if (strPayload == strOFF) {
-      robotReturn();
-      delay(2000);
+      else {
+        powerOff();
+      }
     }
     else {
-      powerOff();
+      if (strPayload == strSTOP) {
+        if (!b) {
+          timerTask.t_suspend(idRobotTask);
+          powerOff();
+        }
+        else {
+          Serial.println("resume");
+          timerTask.t_resume(idRobotTask);
+          if (!direction) {
+            robotForward();
+          }
+          else {
+            robotReturn();
+          }
+        }
+        b = !b;
+      }
     }
     return;
   }
