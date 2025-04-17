@@ -439,7 +439,7 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
   }
   //------------------- TOPIC_GET_PARAM ----------------
   if (strcmp(topic, TOPIC_GET_PARAM) == 0) {
-    Serial.println(tabParam);
+    // Serial.println(tabParam);
     mqttClient.publish(TOPIC_PARAM, tabParam);
     if (currentCycle!=0)
       mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
@@ -515,7 +515,7 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
           powerOff();
         }
         else {
-          Serial.println("resume");
+          // Serial.println("resume");
           timerTask.t_resume(idRobotTask);
           if (!direction) {
             robotForward();
