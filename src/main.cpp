@@ -450,7 +450,8 @@ void PubSubCallback(char* topic, byte* payload, unsigned int length) {
   //------------------ TOPIC_GET_VERSION ----------------
   else if (strcmp(topic, TOPIC_GET_VERSION) == 0) {
     static char buffer[50];
-    sprintf(buffer, "%s;%s", version.c_str(), WiFi.localIP().toString().c_str());
+    long rssi = WiFi.RSSI();
+    sprintf(buffer, "%s;%s RSSI:%ld", version.c_str(), WiFi.localIP().toString().c_str(), rssi);
     mqttClient.publish(TOPIC_READ_VERSION, buffer);
     return;
   }
