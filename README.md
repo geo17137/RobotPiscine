@@ -17,13 +17,12 @@ Une application Android permet de paramétrer le cycle de nettoyage ou de comman
 le robot.<br>
 
 Système de commande:<br>
-- Carte electronique <br>
+- Carte electronique et convertisseur buck 20A (si necessaire)<br>
 https://fr.aliexpress.com/item/1005003493100800.html?spm=a2g0o.cart.0.0.6e4f378dLYCl5I&mp=1&pdp_npi=5%40dis%21EUR%21EUR%204.39%21EUR%204.39%21%21%21%21%21%40211b629217407258366847389e3ec1%2112000026040971361%21ct%21FR%21917560485%21%212%210&gatewayAdapt=glo2fra<br>
+https://fr.aliexpress.com/item/1005005876635127.html?spm=a2g0o.order_list.order_list_main.11.4bf35e5bDy7wVE&gatewayAdapt=glo2fra<br>
 - Pont de diodes<br>
 https://fr.aliexpress.com/item/1005006066715454.html?spm=a2g0o.order_list.order_list_main.5.7deb5e5bFUphXd&gatewayAdapt=glo2fra<br>
 <br>  
-- Convertisseur buck 20A (si necessaire)<br>
-https://fr.aliexpress.com/item/1005005876635127.html?spm=a2g0o.order_list.order_list_main.11.4bf35e5bDy7wVE&gatewayAdapt=glo2fra<br>
   
 Application Android<br>
 -------------------<br>
