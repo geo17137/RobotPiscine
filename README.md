@@ -1,16 +1,17 @@
 Pilotage d'un robot de piscine<br>
-------------------------------<br>
-Ce logiciel est destiné à remplacer le logiciel d'origine
-de la plupart de robots de piscine.<br>
-Il est implémenté sur une carte esp01s pilotant une carte à deux relais placée dans
+-----------------------------------<br>
+Lorsqu'un robot de piscine tombe en panne, l'éléctronique de commande et de puissance en est généralement la cause. Or celle-ci est parfois impossible à remplacer voire trop couteuse.<bR>
+La solution consiste à supprimer cette dernière est à la remplacer par un autre contrôleur effectant la même tâche.<br>
+On utilisera ici un controleur esp8266 (ici un esp01s) ou un contrôleur esp32 pilotant une carte à deux relais placée dans
 la partie non immergée du robot.<br>
 Cet ensemble remplace l'électronique d'origine des robots (hors alimentation de puissance).
 L'électronique de la partie immergée du robot est supprimée et est remplacée par
-un pont de diodes. La partie immergée est alimentée uniquement à l'aide de deux fils
+un pont de diodes.<br>
+La partie immergée est alimentée uniquement à l'aide de deux fils
 véhiculant un courant dont la polarité s'inverse pour changer le sens de déplacement du 
 robot.<br>
 Le pont de diode assure la rotation unidirectionnelle de la turbine.<br>
-Dans la partie non immergée du robot, seule l'alimention BT est conservée.<br>
+Dans la partie non immergée du robot, seule l'alimention BT est conservée. Si cette dernière fourni une tension trop élevée on ajoutera un convertisseur Buck 20A.<br>
 La carte de commande communique via des messages MQTT avec un courtier MQTT public ou privé.<br>
 Une application Android permet de paramétrer le cycle de nettoyage ou de commander manuellement
 le robot.<br>
