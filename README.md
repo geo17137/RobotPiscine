@@ -29,4 +29,11 @@ https://github.com/geo17137/RobotPiscineFrontEnd
 <br><br>
 Plans<br>
 -----<br>
+Deux versions son disponibles<br>
+- Version avec moteur de traction et turbine fonctionnant sous le même tension<br>
+- Version avec moteur de traction et turbine fonctionnant sous deux tensions (tension turbine > tension traction)<br>
+  Cette version necessite un relai à double inverseur fonctionnant avec tension bobine = tension turbine<br>
+  et un convertisseur buck<br>
+  https://fr.aliexpress.com/item/1005005932230887.html?spm=a2g0o.cart.0.0.3c23378ddQLvah&mp=1&pdp_npi=5%40dis%21EUR%21EUR%205.49%21EUR%205.49%21%21%21%21%21%400b830cc417453980619753693e07af%2112000034905435980%21ct%21FR%21917560485%21%211%210&gatewayAdapt=glo2fra<br>
+
 Voir dossier doc
