@@ -203,7 +203,7 @@ char* getDate() {
   static char date[80];
   ntpTime->update();
   time_t epochTime = ntpTime->getEpochTime();
-  struct tm* ptm = gmtime((time_t*)&epochTime);
+  const struct tm* ptm = gmtime((time_t*)&epochTime);
   sprintf(date, "%02d/%02d/%4d %s",
     ptm->tm_mday,
     (ptm->tm_mon + 1),
@@ -224,7 +224,7 @@ inline int getMinutes() {
 // De la chaine param lue dans le fichier PARAM_FILE_NAME
 // et mis à jour par le message TOPIC_GET_PARAM
 // DEBUG_TIME est soit vide soit égal à  /10 (DEBUG défini)
-void setParam(char* tabParam) {
+void setParam(const char* tabParam) {
   char temp[50];
   strcpy(temp, tabParam);
   Item* paramItem = split(temp, ":");
@@ -374,7 +374,7 @@ void deleteLogs() {
 void publishState() {
   static char buffer[60];
   char randomBuffer[60];
-  sprintf(buffer, "Cycle %d/%d, t=%d/%d mn#%d",
+  sprintf(buffer, "Cycle %d/%d, t=%u/%u mn#%d",
     currentCycle,
     nbCycles,
     timerTask.getCurrentTime(idEndRobotTask) / 60,
@@ -382,10 +382,10 @@ void publishState() {
     timerTask.getStatus(idRobotTask) != CREE);
   mqttClient.publish(TOPIC_STATUS, buffer);  
   if (!direction) {
-    sprintf(randomBuffer, "AV %d/%d", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
+    sprintf(randomBuffer, "AV %u/%u", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
   }
   else {
-    sprintf(randomBuffer, "AR %d/%d", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
+    sprintf(randomBuffer, "AR %u/%u", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
   }  
   mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
   if (activeScheduledTask)
