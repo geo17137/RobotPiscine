@@ -26,8 +26,11 @@ char date[20];
 int scheduleEnabled;
 int scheduleH;
 int scheduleM;
-int minRandom;
-int maxRandom;
+int minRandom_av;
+int maxRandom_av;
+int minRandom_ar;
+int maxRandom_ar;
+int reverse_cycle;
 int nbCycles;
 int activeTime;
 int logStatus;
@@ -44,7 +47,8 @@ task_id idScheduleCleanTask;
 task_id idMonoPowerTimeOffTask;
 
 // Buffers
-char tabParam[30];
+// tabParam doit être de la taille de PARAM+1 
+char tabParam[33];
 char bufferTime[30];
 char randomBuffer[12];
 
@@ -79,7 +83,8 @@ inline void debugPrintParam() {
   Serial.println(tabParam);
   Serial.printf("scheduleEnabled  = %d\n", scheduleEnabled);
   Serial.printf("schedule time = %02d:%02d\n", scheduleH, scheduleM);
-  Serial.printf("random limits = %d, %d\n", minRandom, maxRandom);
+  Serial.printf("random limits = %d, %d, %d, %d\n", minRandom_av, maxRandom_av,minRandom_ar, maxRandom_ar);
+  Serial.printf("Reverse = %d\n", reverse_cycle);
   Serial.printf("nbCycles = %d\n", nbCycles);
   Serial.printf("activeTime = %d mn\n", activeTime);
   Serial.printf("logStatus= %d\n", logStatus);

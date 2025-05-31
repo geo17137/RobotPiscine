@@ -71,7 +71,6 @@
 #include "main.h"
 #include "files.h"
 
-
 inline void initOTA() {
   ArduinoOTA.setHostname(HOSTNAME);
   ArduinoOTA.begin();
@@ -231,8 +230,11 @@ void setParam(const char* tabParam) {
   scheduleEnabled = atoi(get(paramItem, SCHEDULED_ENABLE));
   scheduleH = atoi(get(paramItem, SCHEDULED_TIME_H));
   scheduleM = atoi(get(paramItem, SCHEDULED_TIME_M));
-  minRandom = atoi(get(paramItem, MIN_RANDOM))  DEBUG_TIME;
-  maxRandom = atoi(get(paramItem, MAX_RAMDOM))  DEBUG_TIME;
+  minRandom_av = atoi(get(paramItem, MIN_RANDOM_AV))  DEBUG_TIME;
+  maxRandom_av = atoi(get(paramItem, MAX_RAMDOM_AV))  DEBUG_TIME;
+  minRandom_ar = atoi(get(paramItem, MIN_RANDOM_AR))  DEBUG_TIME;
+  maxRandom_ar = atoi(get(paramItem, MAX_RAMDOM_AR))  DEBUG_TIME;
+  reverse_cycle= atoi(get(paramItem, REVERSE))    DEBUG_TIME;
   nbCycles  = atoi(get(paramItem, N_CYCLES))    DEBUG_TIME;
   activeTime= atoi(get(paramItem, ACTIVE_TIME)) DEBUG_TIME;
   logStatus = atoi(get(paramItem, LOG_STATUS));
@@ -269,25 +271,24 @@ void endCycle() {
 // Avance-recule
 void robotTask() {
   powerOff();
-  delay(750);
-  static unsigned randomValue = 0;
+  delay(500);
   // Nouveau temps d'avance ou de recul
   // currentRandomValue = random(minRandom, maxRandom);
   if (!direction) {
-    currentRandomValue = random(minRandom, maxRandom);
-    randomValue = currentRandomValue;
+    currentRandomValue = random(minRandom_av, maxRandom_av);
     timerTask.setInterval(idRobotTask, currentRandomValue);
-
-    robotForward();
+    if (!reverse_cycle)
+      robotForward();
+    else
+      robotReturn();
   }
   else {
-    // if (currentRandomValue > randomValue && currentRandomValue > 25)
-    //    currentRandomValue = randomValue -  15;
-    if (randomValue > 30) {
-      currentRandomValue = randomValue -  20;
-    }
+    currentRandomValue = random(minRandom_ar, maxRandom_ar);
     timerTask.setInterval(idRobotTask, currentRandomValue);
-    robotReturn();
+    if (!reverse_cycle)
+      robotReturn();
+    else
+      robotForward();
   }
   mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
   direction = !direction;
@@ -329,6 +330,7 @@ void setup() {
   // Permet de vérifier que le serveur ntp fourni l'heure
   strcpy(date, "00/00/00 00:00:00");
   fileParam = initFileParam(FORCE);
+  Serial.println(tabParam);
   fileLog = new FileLittleFS(LOG_FILE_NAME);
 
   initWifiStation();
@@ -347,7 +349,7 @@ void setup() {
   // Création des tâches
   // Tache rythmée de nettoyage
   randomSeed(analogRead(A0));
-  idRobotTask = timerTask.t_creer(robotTask, random(minRandom, maxRandom), true);
+  idRobotTask = timerTask.t_creer(robotTask, random(minRandom_av, maxRandom_av), true);
 
   // Monostable déclenchant la fin du nettoyage après activeTime * 60 secondes
   idEndRobotTask = timerTask.t_creer(robotEndTask, activeTime * 60, false);
@@ -359,7 +361,7 @@ void setup() {
   mqttClient.publish(TOPIC_RESET_CYCLE, "");
   Serial.println("Robot piscine V" + version);
   Serial.println(getDate());
-  currentRandomValue = random(minRandom, maxRandom);
+  currentRandomValue = random(minRandom_av, maxRandom_av);
 }
 
 void deleteLogs() {
@@ -381,7 +383,8 @@ void publishState() {
     timerTask.getStartTime(idEndRobotTask) / 60,
     timerTask.getStatus(idRobotTask) != CREE);
   mqttClient.publish(TOPIC_STATUS, buffer);  
-  if (!direction) {
+  // Direction est inversé après execution de robotTask
+  if (direction) {
     sprintf(randomBuffer, "AV %u/%u", timerTask.getCurrentTime(idRobotTask), currentRandomValue);
   }
   else {

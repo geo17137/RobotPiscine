@@ -25,11 +25,11 @@
 #endif
 */
 
-const String version = "2025.05.10 [D.T]";
+const String version = "2025.05.31 [D.T]";
 #define HOSTNAME "ROBOT_ESP"
 // FORCE permet de forcer la mise à jour des paramètres
 // à partir de la chaine PARAM
-#define POWER_DEBUG
+// #define POWER_DEBUG
 
 #define FORCE  false 
 #define WeMos_D1_Mini
@@ -89,15 +89,18 @@ const char *mqttPassword = MQTT_PASSWORD;
 
 // Param robot
 // Chaine des paramètres de configuration
-const char *PARAM = "1:10:30:40:99:150:360:1";
+const char *PARAM = "1:10:30:40:99:40:99:0:150:360:1";
 // Signification des champs
 #define SCHEDULED_ENABLE 0
 #define SCHEDULED_TIME_H 1
 #define SCHEDULED_TIME_M 2
-#define MIN_RANDOM       3
-#define MAX_RAMDOM       4
-#define N_CYCLES         5
-#define ACTIVE_TIME      6
-#define LOG_STATUS       7
-#define PARAM_LEN        8
+#define MIN_RANDOM_AV    3
+#define MAX_RAMDOM_AV    4
+#define MIN_RANDOM_AR    5
+#define MAX_RAMDOM_AR    6
+#define REVERSE          7
+#define N_CYCLES         8
+#define ACTIVE_TIME      9
+#define LOG_STATUS       10
+#define PARAM_LEN        11
 #endif
