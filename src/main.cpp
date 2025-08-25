@@ -240,22 +240,28 @@ void setParam(const char* tabParam) {
   logStatus = atoi(get(paramItem, LOG_STATUS));
 }
 
-// Pour le moment non utilisé
-// char* modifyParam(const char* tabParam, const char* theParam, int pos) {
-//   static char temp[50];
-//   strcpy(temp, tabParam);
-//   Item* paramItem = split(temp, ":");
-//   strcpy(get(paramItem, pos), theParam);
-//   strcpy(temp, "");
-//   int i = 0;
-//   for (; i < PARAM_LEN - 1; i++) {
-//     strcat(temp, get(paramItem, i));
-//     strcat(temp, ":");
-//   }
-//   strcat(temp, get(paramItem, i));
-//   return temp;
-// }
-
+/**
+ * Modifie un paramètre
+ * tabParam : chaine de paramètres origine
+ * theParam: valareur du paramètre à modifier (sans les séparateurs)
+ * pos : position du paramètre
+ * @returns chaine de paramètres mis à jour
+ */
+char* modifyParam(const char* tabParam, const char* theParam, int pos) {
+  static char temp[50];
+  strcpy(temp, tabParam);
+  Item* paramItem = split(temp, ":");
+  strcpy(get(paramItem, pos), theParam);
+  strcpy(temp, "");
+  int i = 0;
+  for (; i < PARAM_LEN - 1; i++) {
+    strcat(temp, get(paramItem, i));
+    strcat(temp, ":");
+  }
+  strcat(temp, get(paramItem, i));
+  return temp;
+}
+ 
 
 void endCycle() {
   timerTask.t_stop(idRobotTask);
@@ -292,6 +298,11 @@ void robotTask() {
   }
   mqttClient.publish(TOPIC_CYCLE_TIME, randomBuffer);
   direction = !direction;
+  if (currentCycle == nbCycles/2) {
+    reverse_cycle = !reverse_cycle;
+    strcpy(tabParam, modifyParam(tabParam, (reverse_cycle) ? "1" : "0", REVERSE));
+    mqttClient.publish(TOPIC_PARAM, tabParam);
+  }
   if (++currentCycle >= nbCycles) {
     endCycle();
     writeLogs("End count cycle");
@@ -362,6 +373,10 @@ void setup() {
   Serial.println("Robot piscine V" + version);
   Serial.println(getDate());
   currentRandomValue = random(minRandom_av, maxRandom_av);
+
+  // Serial.println(tabParam);
+  // Serial.println("New param");
+  // Serial.println(modifyParam(tabParam, "1", REVERSE));
 }
 
 void deleteLogs() {

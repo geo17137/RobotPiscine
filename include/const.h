@@ -25,7 +25,7 @@
 #endif
 */
 
-const String version = "2025.05.31 [D.T]";
+const String version = "2025.08.25 [D.T]";
 #define HOSTNAME "ROBOT_ESP"
 // FORCE permet de forcer la mise à jour des paramètres
 // à partir de la chaine PARAM
